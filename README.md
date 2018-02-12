@@ -1,6 +1,6 @@
 # GHCli Formal Description
 
-This is description is built in [alloy](alloy.mit.edu) and formally describes the GHCli android tool for controlling github account. You can find the tool source code [here](https://github.com/llvieira/GHCli).
+This is description is built in [alloy](https://alloy.mit.edu) and formally describes the GHCli android tool for controlling github account. You can find the tool source code [here](https://github.com/llvieira/GHCli).
 
 ## Prerequisites
 
