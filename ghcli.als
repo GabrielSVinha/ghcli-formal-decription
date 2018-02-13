@@ -21,6 +21,13 @@ sig Issue{
 }
 
 // TO-DO: one comment cannot belong to issue and pull request
+
+pred follow[from, from': GithubUser, to: GithubUser]{
+  from' = from
+  to not in from.followers
+  from'.followers = from.followers + to
+}
+
 // TO-DO: add pred to follow/unfollow, comment
 
 sig Comment{}
@@ -54,4 +61,4 @@ fact doesntFollowYourself{
 }
 
 pred show(){}
-run show for 5
+run follow for 4 GithubUser, 3 Repository, 3 Issue, 4 Comment, 3 PullRequest
