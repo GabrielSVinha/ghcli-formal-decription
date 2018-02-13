@@ -12,23 +12,26 @@ sig Repository{
   pullRequests: set PullRequest
 }
 
-sig PullRequest{
-  prComments: some Comment
+sig RepositoryAsset{
+  repoComments: set Comment
 }
 
-sig Issue{
-  issueComments: some Comment
-}
+sig PullRequest extends RepositoryAsset{}
 
-// TO-DO: one comment cannot belong to issue and pull request
+sig Issue extends RepositoryAsset{}
 
 pred follow[from, from': GithubUser, to: GithubUser]{
-  from' = from
-  to not in from.followers
   from'.followers = from.followers + to
 }
 
-// TO-DO: add pred to follow/unfollow, comment
+pred unfollow[from, from': GithubUser, to: GithubUser]{
+  from'.followers = from.followers - to
+}
+
+pred comment[from, from': GithubUser, repo, repo': RepositoryAsset, c: Comment]{
+  from'.comments = from.comments
+  repo'.repoComments = repo.repoComments + c
+}
 
 sig Comment{}
 
@@ -36,16 +39,22 @@ fact issuesMustBelongToArepository{
   all i: Issue | #i.~issues = 1
 }
 
+fact allIssuesAndPrsAreAssets{Issue + PullRequest = RepositoryAsset}
+
 fact prsMustBelongToRepo{
   all p: PullRequest | #p.~pullRequests = 1
 }
 
+fact prsMustBelongToUser{
+  all p: PullRequest | #p.~prs = 1
+}
+
 fact commentsBelongToOneIssueAndUser{
-  all c: Comment | #c.~issueComments = 1 and #c.~comments = 1
+  all c: Comment | #c.~repoComments = 1 and #c.~comments = 1
 }
 
 fact commentsBelongToOnePRAndUser{
-  all c: Comment | #c.~prComments = 1 and #c.~comments = 1
+  all c: Comment | #c.~repoComments = 1 and #c.~comments = 1
 }
 
 fact allReposBelongToAnUser{
@@ -61,4 +70,4 @@ fact doesntFollowYourself{
 }
 
 pred show(){}
-run follow for 4 GithubUser, 3 Repository, 3 Issue, 4 Comment, 3 PullRequest
+run show for 8
